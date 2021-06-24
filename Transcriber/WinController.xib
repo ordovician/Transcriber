@@ -7,6 +7,8 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="WinController" customModule="Transcriber" customModuleProvider="target">
             <connections>
+                <outlet property="sourceTextView" destination="nmE-Xj-WdC" id="eLf-0T-Gvl"/>
+                <outlet property="transcribedTextView" destination="8Cy-9g-zIX" id="mYq-eN-Yaa"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -52,6 +54,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="loadWithSender:" target="-2" id="xnr-DR-tBX"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YfY-dD-cGS">
                         <rect key="frame" x="13" y="13" width="96" height="32"/>
@@ -132,6 +137,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="saveWithSender:" target="-2" id="oeq-XL-FB8"/>
+                        </connections>
                     </button>
                 </subviews>
             </view>
