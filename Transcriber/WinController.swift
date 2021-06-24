@@ -63,14 +63,31 @@ class WinController: NSWindowController {
         let openPanel = NSOpenPanel()
         
         openPanel.beginSheetModal(for: window!) { response in
-            guard response == .OK, url = openPanel.url else {
+            guard response == .OK, let url = openPanel.url else {
                 let alert = NSAlert()
                 alert.messageText = "Could not retrieve file location"
                 alert.runModal()
                 return
             }
-            
-            
+
+            transcribe(url: url) { (result, error) in
+                if let err = error {
+                    let alert = NSAlert(error: err)
+                    alert.runModal()
+                }
+                
+                guard let result = result else {
+                    let alert = NSAlert()
+                    alert.messageText = "transcribing voice audio failed"
+                    alert.runModal()
+                    return
+                }
+
+                // Print the speech that has been recognized so far
+                if result.isFinal {
+                    self.transcribedTextView.string = result.bestTranscription.formattedString
+                }
+            }
         }
     }
 }

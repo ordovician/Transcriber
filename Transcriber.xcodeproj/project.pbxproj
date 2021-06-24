@@ -14,6 +14,7 @@
 		D55C901A2684D7C500F3F8A3 /* TranscriberUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55C90192684D7C500F3F8A3 /* TranscriberUITests.swift */; };
 		D55C902B2684D90900F3F8A3 /* WinController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55C90292684D90900F3F8A3 /* WinController.swift */; };
 		D55C902C2684D90900F3F8A3 /* WinController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D55C902A2684D90900F3F8A3 /* WinController.xib */; };
+		D5A3636026853730006021EE /* Speech.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A3635F26853730006021EE /* Speech.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		D55C901B2684D7C500F3F8A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D55C90292684D90900F3F8A3 /* WinController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinController.swift; sourceTree = "<group>"; };
 		D55C902A2684D90900F3F8A3 /* WinController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WinController.xib; sourceTree = "<group>"; };
+		D5A3635F26853730006021EE /* Speech.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Speech.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				D55C90012684D7C500F3F8A3 /* MainMenu.xib */,
 				D55C90042684D7C500F3F8A3 /* Info.plist */,
 				D55C90052684D7C500F3F8A3 /* Transcriber.entitlements */,
+				D5A3635F26853730006021EE /* Speech.swift */,
 			);
 			path = Transcriber;
 			sourceTree = "<group>";
@@ -257,6 +260,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D5A3636026853730006021EE /* Speech.swift in Sources */,
 				D55C902B2684D90900F3F8A3 /* WinController.swift in Sources */,
 				D55C8FFE2684D7C100F3F8A3 /* AppDelegate.swift in Sources */,
 			);
