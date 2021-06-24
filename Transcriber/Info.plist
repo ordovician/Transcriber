@@ -26,5 +26,7 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>For transcribing recorded audio</string>
 </dict>
 </plist>

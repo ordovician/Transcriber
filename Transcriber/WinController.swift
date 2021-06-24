@@ -45,13 +45,13 @@ class WinController: NSWindowController {
             if response == .OK {
                 guard let url = openPanel.url else {
                     let alert = NSAlert()
-                    alert.messageText = "Could not retrivie file location"
+                    alert.messageText = "Could not retrieve file location"
                     alert.runModal()
                     return
                 }
                 do {
                     let sourceText = try String(contentsOf: url, encoding: .utf8)
-                    NSLog(sourceText)
+                    self.sourceTextView.string = sourceText
                 } catch {
                     NSLog("Unable to load file")
                 }
@@ -59,4 +59,18 @@ class WinController: NSWindowController {
         }
     }
     
+    @IBAction func loadAudio(sender: AnyObject) {
+        let openPanel = NSOpenPanel()
+        
+        openPanel.beginSheetModal(for: window!) { response in
+            guard response == .OK, url = openPanel.url else {
+                let alert = NSAlert()
+                alert.messageText = "Could not retrieve file location"
+                alert.runModal()
+                return
+            }
+            
+            
+        }
+    }
 }
