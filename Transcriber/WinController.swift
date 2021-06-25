@@ -8,17 +8,22 @@
 import Cocoa
 import Speech
 
-class WinController: NSWindowController, SFSpeechRecognizerDelegate {
+class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioRecorderDelegate {
     let recognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
-    var recogReq: SFSpeechAudioBufferRecognitionRequest?
-    var recogTask: SFSpeechRecognitionTask?
-    let audioEngine = AVAudioEngine()
+    var recorder : AVAudioRecorder?
+    var player : AVAudioPlayer?
     
     @IBOutlet weak var transcribedTextView: NSTextView!
     @IBOutlet weak var sourceTextView: NSTextView!
     @IBOutlet weak var recordButton: NSButton!
     @IBOutlet weak var pauseButton: NSButton!
-    @IBOutlet weak var stopButton: NSButton!
+    @IBOutlet weak var transcribeButton: NSButton!
+    
+    @IBOutlet weak var audioInputField: NSTextField!
+    @IBOutlet weak var textInputField: NSTextField!
+    @IBOutlet weak var rectimeField: NSTextField!
+    @IBOutlet weak var powerField: NSTextField!
+    
     
     
     override func windowDidLoad() {
@@ -29,7 +34,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate {
     
     override public func showWindow(_ sender: Any?) {
         super.showWindow(sender)
-        recognizer.delegate = self
+        self.recognizer.delegate = self
         
         SFSpeechRecognizer.requestAuthorization { authStat in
             OperationQueue.main.addOperation {
@@ -41,70 +46,67 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate {
                 }
             }
         }
+        
+        Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { timer in
+            if let rec = self.recorder {
+                self.rectimeField.floatValue = Float(rec.currentTime)
+                rec.updateMeters() // or you cannot get peak power values
+                self.powerField.floatValue = rec.peakPower(forChannel: 1)
+            }
+        }
     }
     
     func enableRecordButtons(_ on: Bool) {
         recordButton.isEnabled = on
         pauseButton.isEnabled = on
+        transcribeButton.isEnabled = on
     }
     
-//    func startRecording() throws {
-//        // cancel any previously running task
-//        recogTask?.cancel()
-//        self.recogTask = nil
-//
-//        // Create and configure the speech recognition request.
-//        self.recogReq = SFSpeechAudioBufferRecognitionRequest()
-//        guard let recogReq = recogReq else {
-//            fatalError("Unable to create a SFSpeechAudioBufferRecognitionRequest object")
-//        }
-//        recogReq.shouldReportPartialResults = true
-//
-//        let input = audioEngine.inputNode
-//
-//        // Create a recognition task for the speech recognition session.
-//        recogTask = self.recognizer.recognitionTask(with: recogReq) { result, error in
-//            NSLog("Start reckognition task")
-//            var done = false
-//            if let result = result {
-//                self.transcribedTextView.string = result.bestTranscription.formattedString
-//                done = result.isFinal
-//            }
-//
-//            if error != nil || done {
-//                self.audioEngine.stop()
-//                input.removeTap(onBus: 0)
-//                self.recogReq = nil
-//                self.recogTask = nil
-//                self.enableRecordButtons(true)
-//            }
-//        }
-//
-//        // Configure the microphone input.
-//        let format = input.outputFormat(forBus: 0)
-//
-//        input.installTap(onBus: 0, bufferSize: 1024, format: format) { (buffer: AVAudioPCMBuffer, when: AVAudioTime) in
-//            NSLog("Received audio")
-//            self.recogReq?.append(buffer)
-//        }
-//
-//        audioEngine.prepare()
-//        try audioEngine.start()
-//        transcribedTextView.string = "I am listening, start talking!"
-//    }
+    @IBAction func playAudio(_ sender: Any) {
+        let url = URL(fileURLWithPath: self.audioInputField.stringValue)
+        do {
+            let player = try AVAudioPlayer(contentsOf: url)
+            player.prepareToPlay()
+            player.play()
+            self.player = player
+        } catch {
+            NSLog("faild to create audio player")
+        }
+    }
+    
+    @IBAction func stopPlaying(_ sender: Any) {
+        self.player?.stop()
+        self.player = nil
+    }
+    
     
     // Audio only recording
     func startRecording() throws {
-        let input = audioEngine.inputNode
-        let format = input.outputFormat(forBus: 0)
-
-        input.installTap(onBus: 0, bufferSize: 1024, format: format) { (buffer: AVAudioPCMBuffer, when: AVAudioTime) in
-            self.recogReq?.append(buffer)
-        }
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        let docsDir = paths[0]
+        let filename = docsDir.appendingPathComponent("recording.m4a")
         
-        audioEngine.prepare()
-        try audioEngine.start()
-        NSLog("Started recording audio")
+        self.audioInputField.stringValue = filename.path
+        
+        let settings = [
+            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+            AVSampleRateKey: 12000,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+        ]
+        
+        let rec = try AVAudioRecorder(url: filename, settings: settings)
+        rec.delegate = self
+        var ok = rec.prepareToRecord()
+        if !ok {
+            NSLog("Not okay to prepare recording")
+        }
+        rec.isMeteringEnabled = true // TODO: Use a checkbox for this
+        ok = rec.record()
+        if !ok {
+            NSLog("Failed to start recording")
+        }
+        self.recorder = rec
     }
     
     // MARK: SFSpeechRecognizerDelegate
@@ -117,49 +119,47 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate {
         }
     }
     
+    // MARK: AVAudioRecorderDelegate
+    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+        if !flag {
+            self.recorder?.stop()
+            self.recorder = nil
+            NSLog("Recording interrupted")
+        }
+    }
+    
     // MARK: Interface Builder actions
     
     @IBAction func record(sender: AnyObject) {
-//        if audioEngine.isRunning {
-//            audioEngine.stop()
-//            recogReq?.endAudio()
-//            recordButton.isEnabled = false
-//        } else {
-            do {
-                try startRecording()
-            } catch {
-                NSLog("Recording not available")
-            }
-//        }
+        if let rec = self.recorder, !rec.isRecording {
+            rec.record()
+            NSLog("Resume recording")
+            return
+        }
+        
+        do {
+            try startRecording()
+        } catch {
+            NSLog("Failed to record")
+        }
+    }
+    
+    @IBAction func stop(sender: AnyObject) {
+        self.recorder?.stop()
+        self.recorder = nil
     }
     
     @IBAction func pause(sender: AnyObject) {
-        NSLog("Hit pause")
+        self.recorder?.pause()
+        NSLog("Pause recording")
     }
 
-//    @IBAction func stop(sender: AnyObject) {
-//        if audioEngine.isRunning {
-//            audioEngine.stop()
-//            recogReq?.endAudio()
-//            recordButton.isEnabled = false
-//        }
-//    }
-    
-    // Audio only recording
-    @IBAction func stop(sender: AnyObject) {
-        if audioEngine.isRunning {
-            audioEngine.stop()
-            NSLog("Audio recording stopped")
-        } else {
-            NSLog("Audio not recording")
-        }
-    }
 
     @IBAction func save(sender: AnyObject) {
         
     }
     
-    @IBAction func load(sender: AnyObject) {
+    @IBAction func loadSourceText(sender: AnyObject) {
         let openPanel = NSOpenPanel()
         
         openPanel.canChooseFiles = true
@@ -177,6 +177,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate {
                 do {
                     let sourceText = try String(contentsOf: url, encoding: .utf8)
                     self.sourceTextView.string = sourceText
+                    self.textInputField.stringValue = url.path
                 } catch {
                     NSLog("Unable to load file")
                 }
@@ -195,24 +196,32 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate {
                 return
             }
 
-            transcribe(url: url) { (result, error) in
-                if let err = error {
-                    let alert = NSAlert(error: err)
-                    alert.runModal()
-                }
-                
-                guard let result = result else {
-                    let alert = NSAlert()
-                    alert.messageText = "transcribing voice audio failed"
-                    alert.runModal()
-                    return
-                }
+            self.audioInputField.stringValue = url.path
+            self.transcribeButton.isEnabled = true
+        }
+    }
+    
+    @IBAction func startTranscribe(_ sender: Any) {
+        let url: URL = URL(fileURLWithPath: self.audioInputField.stringValue)
+        
+        transcribe(url: url) { (result, error) in
+            if let err = error {
+                let alert = NSAlert(error: err)
+                alert.runModal()
+            }
+            
+            guard let result = result else {
+                let alert = NSAlert()
+                alert.messageText = "transcribing voice audio failed"
+                alert.runModal()
+                return
+            }
 
-                // Print the speech that has been recognized so far
-                if result.isFinal {
-                    self.transcribedTextView.string = result.bestTranscription.formattedString
-                }
+            // Print the speech that has been recognized so far
+            if result.isFinal {
+                self.transcribedTextView.string = result.bestTranscription.formattedString
             }
         }
     }
+    
 }
