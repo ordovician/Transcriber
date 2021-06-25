@@ -6,20 +6,115 @@
 //
 
 import Cocoa
+import Speech
 
-class WinController: NSWindowController {
-
+class WinController: NSWindowController, SFSpeechRecognizerDelegate {
+    let recognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
+    var recogReq: SFSpeechAudioBufferRecognitionRequest?
+    var recogTask: SFSpeechRecognitionTask?
+    let audioEngine = AVAudioEngine()
+    
     @IBOutlet weak var transcribedTextView: NSTextView!
     @IBOutlet weak var sourceTextView: NSTextView!
+    @IBOutlet weak var recordButton: NSButton!
+    @IBOutlet weak var pauseButton: NSButton!
+    @IBOutlet weak var stopButton: NSButton!
+    
     
     override func windowDidLoad() {
         super.windowDidLoad()
 
-        // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
+        enableRecordButtons(false)
     }
     
-    @IBAction func record(sender: AnyObject) {
+    override public func showWindow(_ sender: Any?) {
+        super.showWindow(sender)
+        recognizer.delegate = self
         
+        SFSpeechRecognizer.requestAuthorization { authStat in
+            OperationQueue.main.addOperation {
+                switch authStat {
+                case .authorized:
+                    self.enableRecordButtons(true)
+                default:
+                    self.enableRecordButtons(false)
+                }
+            }
+        }
+    }
+    
+    func enableRecordButtons(_ on: Bool) {
+        recordButton.isEnabled = on
+        pauseButton.isEnabled = on
+    }
+    
+    func startRecording() throws {
+        // cancel any previously running task
+        recogTask?.cancel()
+        self.recogTask = nil
+        
+        // Create and configure the speech recognition request.
+        self.recogReq = SFSpeechAudioBufferRecognitionRequest()
+        guard let recogReq = recogReq else {
+            fatalError("Unable to create a SFSpeechAudioBufferRecognitionRequest object")
+        }
+        recogReq.shouldReportPartialResults = true
+        
+        let input = audioEngine.inputNode
+
+        // Create a recognition task for the speech recognition session.
+        recogTask = self.recognizer.recognitionTask(with: recogReq) { result, error in
+            var done = false
+            if let result = result {
+                self.transcribedTextView.string = result.bestTranscription.formattedString
+                done = result.isFinal
+            }
+            
+            if error != nil || done {
+                self.audioEngine.stop()
+                input.removeTap(onBus: 0)
+                self.recogReq = nil
+                self.recogTask = nil
+                self.enableRecordButtons(true)
+            }
+        }
+        
+        // Configure the microphone input.
+        let format = input.outputFormat(forBus: 0)
+
+        input.installTap(onBus: 0, bufferSize: 1024, format: format) { (buffer: AVAudioPCMBuffer, when: AVAudioTime) in
+            self.recogReq?.append(buffer)
+        }
+        
+        audioEngine.prepare()
+        try audioEngine.start()
+        transcribedTextView.string = "I am listening, start talking!"
+    }
+    
+    // MARK: SFSpeechRecognizerDelegate
+    
+    public func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
+        if available {
+            recordButton.isEnabled = true
+        } else {
+            recordButton.isEnabled = false            
+        }
+    }
+    
+    // MARK: Interface Builder actions
+    
+    @IBAction func record(sender: AnyObject) {
+        if audioEngine.isRunning {
+            audioEngine.stop()
+            recogReq?.endAudio()
+            recordButton.isEnabled = false
+        } else {
+            do {
+                try startRecording()
+            } catch {
+                NSLog("Recording not available")
+            }
+        }
     }
     
     @IBAction func pause(sender: AnyObject) {
@@ -27,7 +122,11 @@ class WinController: NSWindowController {
     }
 
     @IBAction func stop(sender: AnyObject) {
-        
+        if audioEngine.isRunning {
+            audioEngine.stop()
+            recogReq?.endAudio()
+            recordButton.isEnabled = false
+        }
     }
 
     @IBAction func save(sender: AnyObject) {

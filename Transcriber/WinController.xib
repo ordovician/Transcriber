@@ -7,7 +7,10 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="WinController" customModule="Transcriber" customModuleProvider="target">
             <connections>
+                <outlet property="pauseButton" destination="OmL-BT-Bb1" id="gMS-r8-gpO"/>
+                <outlet property="recordButton" destination="dp0-hp-Is1" id="h5a-kr-4it"/>
                 <outlet property="sourceTextView" destination="nmE-Xj-WdC" id="eLf-0T-Gvl"/>
+                <outlet property="stopButton" destination="rSZ-O5-MMK" id="LSV-QF-bdK"/>
                 <outlet property="transcribedTextView" destination="8Cy-9g-zIX" id="mYq-eN-Yaa"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
@@ -29,6 +32,9 @@
                         <buttonCell key="cell" type="push" title="record" bezelStyle="rounded" image="record.circle.fill" catalog="system" imagePosition="leading" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="RRc-W4-Nfq">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
+                            <connections>
+                                <action selector="recordWithSender:" target="-2" id="ghh-IW-sJ0"/>
+                            </connections>
                         </buttonCell>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rSZ-O5-MMK">
@@ -38,6 +44,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="stopWithSender:" target="-2" id="qDf-jt-5zR"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OmL-BT-Bb1">
                         <rect key="frame" x="102" y="635" width="85" height="32"/>
@@ -46,6 +55,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="pauseWithSender:" target="-2" id="XOx-xB-vHd"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MbJ-R5-nY9">
                         <rect key="frame" x="477" y="635" width="93" height="32"/>
