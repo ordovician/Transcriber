@@ -8,10 +8,13 @@
 import Cocoa
 import Speech
 
-class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioRecorderDelegate {
+class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioRecorderDelegate, NSTextViewDelegate {
     let recognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
     var recorder : AVAudioRecorder?
     var player : AVAudioPlayer?
+    var transcriptions: [SFTranscription] = []
+    
+    var transcriptionDataSource  = TranscriptionDataSource()
     
     @IBOutlet weak var transcribedTextView: NSTextView!
     @IBOutlet weak var sourceTextView: NSTextView!
@@ -23,26 +26,33 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     @IBOutlet weak var textInputField: NSTextField!
     @IBOutlet weak var rectimeField: NSTextField!
     @IBOutlet weak var powerField: NSTextField!
-    
-    
+    @IBOutlet weak var transcriptPopup: NSPopUpButton!
+    @IBOutlet weak var timeLineSlider: NSSlider!
+    @IBOutlet weak var clipTimeField: NSTextField!
+    @IBOutlet weak var wordTableView: NSTableView!
     
     override func windowDidLoad() {
         super.windowDidLoad()
 
         enableRecordButtons(false)
+        self.wordTableView.dataSource = self.transcriptionDataSource
     }
     
     override public func showWindow(_ sender: Any?) {
         super.showWindow(sender)
         self.recognizer.delegate = self
-        
+        self.enableRecordButtons(true)
+        self.transcriptPopup.isEnabled = false
+        self.timeLineSlider.isEnabled  = false
+        self.timeLineSlider.minValue = 0.0
+            
         SFSpeechRecognizer.requestAuthorization { authStat in
             OperationQueue.main.addOperation {
                 switch authStat {
                 case .authorized:
-                    self.enableRecordButtons(true)
+                    self.transcribeButton.isEnabled = true
                 default:
-                    self.enableRecordButtons(false)
+                    self.transcribeButton.isEnabled = false
                 }
             }
         }
@@ -112,11 +122,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     // MARK: SFSpeechRecognizerDelegate
     
     public func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
-        if available {
-            recordButton.isEnabled = true
-        } else {
-            recordButton.isEnabled = false            
-        }
+        transcribeButton.isEnabled = available
     }
     
     // MARK: AVAudioRecorderDelegate
@@ -204,7 +210,8 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     @IBAction func startTranscribe(_ sender: Any) {
         let url: URL = URL(fileURLWithPath: self.audioInputField.stringValue)
         
-        transcribe(url: url) { (result, error) in
+        let req = SFSpeechURLRecognitionRequest(url: url)
+        self.recognizer.recognitionTask(with: req) { (result, error) in
             if let err = error {
                 let alert = NSAlert(error: err)
                 alert.runModal()
@@ -218,10 +225,84 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
             }
 
             // Print the speech that has been recognized so far
-            if result.isFinal {
-                self.transcribedTextView.string = result.bestTranscription.formattedString
+            guard result.isFinal else {
+                return
             }
+            let best : SFTranscription = result.bestTranscription
+            self.transcribedTextView.string = best.formattedString
+            self.transcriptPopup.isEnabled = true
+            self.transcriptions = result.transcriptions
+            
+            self.transcriptPopup.removeAllItems()
+            for (i, _) in self.transcriptions.enumerated() {
+                self.transcriptPopup.addItem(withTitle: "\(i)")
+            }
+            
+            // Adjust timeline slider range
+            self.timeLineSlider.isEnabled = true
+            guard let lastSeg = best.segments.last else {
+                return
+            }
+            
+            self.timeLineSlider.maxValue = lastSeg.timestamp + lastSeg.duration
+            self.timeLineSlider.doubleValue = 0.0
+            if self.transcribedTextView.delegate == nil {
+                self.transcribedTextView.delegate = self
+            }
+            self.transcriptionDataSource.data = best
+            self.wordTableView.reloadData()
         }
+        
+    }
+    
+    // Switch to showing a different transcript interpreted from the voice
+    @IBAction func changeTranscript(_ sender: NSPopUpButton) {
+        let trans = self.transcriptions[sender.indexOfSelectedItem]
+        self.transcribedTextView.string = trans.formattedString
+    }
+    
+    @IBAction func moveInsideClip(_ slider: NSSlider) {
+        let t = slider.doubleValue
+        self.clipTimeField.doubleValue = t
+        
+        let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
+        
+        var charPos = 0
+        for seg in trans.segments {
+            if t < seg.timestamp + seg.timestamp {
+                break
+            }
+            charPos += seg.substring.count
+        }
+        self.transcribedTextView.setSelectedRange(NSRange(0..<charPos))
+    }
+    
+    // MARK: NSTextViewDelegate
+    func textViewDidChangeSelection(_ notification: Notification) {
+//        guard let txtView = self.transcribedTextView else {
+//            return
+//        }
+//
+//        guard let txtStorage = txtView else {
+//            return
+//        }
+//
+//        guard let s = txtStorage.string else {
+//            return
+//        }
+        
+//        let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
+//        
+//        let r = txtView.selectedRange()
+//        var charPos = 0
+//        for seg in trans.segments {
+//            charPos += seg.substring.count
+//            if charPos > r.lowerBound {
+//                self.timeLineSlider.doubleValue = seg.timestamp
+//                self.clipTimeField.doubleValue = seg.timestamp
+//                break
+//            }
+//        }
     }
     
 }
