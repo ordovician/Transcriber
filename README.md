@@ -11,37 +11,17 @@ With the following classes:
 - AVAudioRecorder
 - AVAudioPlayer
 
-Don't use this app as an example of good software engineering. It is hacked together to try out stuff. There is no proper error handling and methods are not neatly factored into separate files for
+Don't use this app as an example of good software engineering.  There is no proper error handling and methods are not neatly factored into separate files for
 better overview.
 
-## What Works and Doesn't
+## Rational Behind Design
+The GUI is mainly designed for experimentation and hacking. That is why it is fairly complex. It is to be able to see a lot of info and be able to do various operations in small steps to see what happens.
 
-I have been able to get audio playback and speech reckognition to work. However I have not been able to use AVAudioRecorder properly. I don't know why this is. I can get similar looking code in playground working.
+## Howto Use
+Either click _record_ or select an audio file with the `...` button. When recording you need to click `stop` to end. You will then get the path to an audio file you just recorded.
 
-    import Speech
-
-    let paths = FileManager.default.urls(
-        for: .documentDirectory, 
-        in: .userDomainMask)
-    let docsDir = paths[0]
-    let filename = docsDir.appendingPathComponent("voiceRec.m4a")
+Whatever way you got a path to an audio file, you then click `transcribe` to turn audio into text. Note, this can take some time and program does not currently give any visual feedback on progress.
 
 
-    let settings = [
-        AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-        AVSampleRateKey: 12000,
-        AVNumberOfChannelsKey: 1,
-        AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
-    ]
 
-    let rec = try AVAudioRecorder(
-        url: filename, 
-        settings: settings)
-    var ok = rec.prepareToRecord()
 
-    ok = rec.record()
-
-    // Evaluate this in playground when you are done recording
-    rec.stop()
-    
-However in the project this does not seem to work.
