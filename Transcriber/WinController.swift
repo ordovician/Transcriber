@@ -279,30 +279,27 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     
     // MARK: NSTextViewDelegate
     func textViewDidChangeSelection(_ notification: Notification) {
-//        guard let txtView = self.transcribedTextView else {
-//            return
-//        }
-//
-//        guard let txtStorage = txtView else {
-//            return
-//        }
-//
-//        guard let s = txtStorage.string else {
-//            return
-//        }
+        guard let txtView = self.transcribedTextView else {
+            return
+        }
+
+  
         
-//        let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
-//        
-//        let r = txtView.selectedRange()
-//        var charPos = 0
-//        for seg in trans.segments {
-//            charPos += seg.substring.count
-//            if charPos > r.lowerBound {
-//                self.timeLineSlider.doubleValue = seg.timestamp
-//                self.clipTimeField.doubleValue = seg.timestamp
-//                break
-//            }
-//        }
+        let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
+        
+        let r : NSRange = txtView.selectedRange()
+        for (i, seg) in trans.segments.enumerated() {
+            let segRange : NSRange = seg.substringRange
+            
+            if segRange.intersection(r) != nil {
+                self.timeLineSlider.doubleValue = seg.timestamp
+                self.clipTimeField.doubleValue = seg.timestamp
+                self.wordTableView.selectRowIndexes(IndexSet(integer: i), byExtendingSelection: false)
+                break
+            }
+            
+
+        }
     }
     
 }

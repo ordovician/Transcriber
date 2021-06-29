@@ -30,6 +30,8 @@ class TranscriptionDataSource: NSObject, NSTableViewDataSource {
             return seg.substringRange.location
         case "length":
             return seg.substringRange.length
+        case "timestamp":
+            return Float(seg.timestamp)
         default:
             return nil
         }
