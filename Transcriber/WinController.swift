@@ -302,4 +302,22 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
         }
     }
     
+    @IBAction func saveAs(_ sender: Any) {
+        let panel = NSSavePanel()
+        
+        panel.canCreateDirectories = true
+        panel.directoryURL = URL(fileURLWithPath: NSHomeDirectory())
+        panel.beginSheetModal(for: window!) { response in
+            if response == .OK {
+                guard let url = panel.url else {
+                    let alert = NSAlert()
+                    alert.messageText = "Could not get save location"
+                    alert.runModal()
+                    return
+                }
+                
+            }
+        }
+    }
+    
 }

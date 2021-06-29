@@ -16,6 +16,7 @@
 		D55C902C2684D90900F3F8A3 /* WinController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D55C902A2684D90900F3F8A3 /* WinController.xib */; };
 		D5A3636026853730006021EE /* Speech.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A3635F26853730006021EE /* Speech.swift */; };
 		D5A36363268A3D6A006021EE /* TranscriptionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A36362268A3D6A006021EE /* TranscriptionDataSource.swift */; };
+		D5A3639B268B82F4006021EE /* FileExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A3639A268B82F4006021EE /* FileExport.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		D55C902A2684D90900F3F8A3 /* WinController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WinController.xib; sourceTree = "<group>"; };
 		D5A3635F26853730006021EE /* Speech.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Speech.swift; sourceTree = "<group>"; };
 		D5A36362268A3D6A006021EE /* TranscriptionDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionDataSource.swift; sourceTree = "<group>"; };
+		D5A3639A268B82F4006021EE /* FileExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExport.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +113,7 @@
 				D55C90052684D7C500F3F8A3 /* Transcriber.entitlements */,
 				D5A3635F26853730006021EE /* Speech.swift */,
 				D5A36362268A3D6A006021EE /* TranscriptionDataSource.swift */,
+				D5A3639A268B82F4006021EE /* FileExport.swift */,
 			);
 			path = Transcriber;
 			sourceTree = "<group>";
@@ -267,6 +270,7 @@
 				D55C902B2684D90900F3F8A3 /* WinController.swift in Sources */,
 				D55C8FFE2684D7C100F3F8A3 /* AppDelegate.swift in Sources */,
 				D5A36363268A3D6A006021EE /* TranscriptionDataSource.swift in Sources */,
+				D5A3639B268B82F4006021EE /* FileExport.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
