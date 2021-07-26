@@ -316,6 +316,12 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
                     return
                 }
                 
+                do {
+                    try self.transcriptionDataSource.data.write(to: url)
+                } catch let err {
+                    let alert = NSAlert(error: err)
+                    alert.runModal()
+                }
             }
         }
     }

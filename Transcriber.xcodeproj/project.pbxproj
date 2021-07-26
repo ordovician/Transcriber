@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,7 +17,6 @@
 		D5A3636026853730006021EE /* Speech.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A3635F26853730006021EE /* Speech.swift */; };
 		D5A36363268A3D6A006021EE /* TranscriptionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A36362268A3D6A006021EE /* TranscriptionDataSource.swift */; };
 		D5A3639B268B82F4006021EE /* FileExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A3639A268B82F4006021EE /* FileExport.swift */; };
-		D5A3639E268B9E72006021EE /* CodableCSV in Frameworks */ = {isa = PBXBuildFile; productRef = D5A3639D268B9E72006021EE /* CodableCSV */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,7 +61,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D5A3639E268B9E72006021EE /* CodableCSV in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,7 +153,6 @@
 			);
 			name = Transcriber;
 			packageProductDependencies = (
-				D5A3639D268B9E72006021EE /* CodableCSV */,
 			);
 			productName = Transcriber;
 			productReference = D55C8FFA2684D7C100F3F8A3 /* Transcriber.app */;
@@ -229,7 +226,6 @@
 			);
 			mainGroup = D55C8FF12684D7C100F3F8A3;
 			packageReferences = (
-				D5A3639C268B9E72006021EE /* XCRemoteSwiftPackageReference "CodableCSV" */,
 			);
 			productRefGroup = D55C8FFB2684D7C100F3F8A3 /* Products */;
 			projectDirPath = "";
@@ -606,25 +602,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		D5A3639C268B9E72006021EE /* XCRemoteSwiftPackageReference "CodableCSV" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/dehesa/CodableCSV";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.6.6;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		D5A3639D268B9E72006021EE /* CodableCSV */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D5A3639C268B9E72006021EE /* XCRemoteSwiftPackageReference "CodableCSV" */;
-			productName = CodableCSV;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D55C8FF22684D7C100F3F8A3 /* Project object */;
 }
