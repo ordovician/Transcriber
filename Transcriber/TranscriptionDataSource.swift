@@ -6,14 +6,14 @@
 //
 
 import Cocoa
-import Speech
+//import Speech
 
 class TranscriptionDataSource: NSObject, NSTableViewDataSource {
-    var data : SFTranscription = SFTranscription()
+    var data : SpokenDoc = SpokenDoc()
 //    var dummy = ["alpha", "beta", "gamma", "zeta"]
     func numberOfRows(in tableView: NSTableView) -> Int {
 //        return data.segments.count
-        return data.segments.count
+        return data.words.count
     }
     
     func tableView(_ tableView: NSTableView, objectValueFor column: NSTableColumn?, row: Int) -> Any? {
@@ -21,17 +21,15 @@ class TranscriptionDataSource: NSObject, NSTableViewDataSource {
             return nil
         }
         
-        let seg = data.segments[row]
+        let word = data.words[row]
         
         switch String(col.identifier.rawValue) {
         case "word":
-            return seg.substring
-        case "position":
-            return seg.substringRange.location
-        case "length":
-            return seg.substringRange.length
+            return word.text
         case "timestamp":
-            return Float(seg.timestamp)
+            return word.timestamp
+        case "duration":
+            return word.duration
         default:
             return nil
         }

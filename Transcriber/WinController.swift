@@ -12,7 +12,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     let recognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
     var recorder : AVAudioRecorder?
     var player : AVAudioPlayer?
-    var transcriptions: [SFTranscription] = []
+    var transcriptions: [SpokenDoc] = []
     
     var transcriptionDataSource  = TranscriptionDataSource()
     
@@ -31,6 +31,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     @IBOutlet weak var clipTimeField: NSTextField!
     @IBOutlet weak var wordTableView: NSTableView!
     
+    @IBOutlet weak var changeWordField: NSTextField!
     @IBOutlet weak var transcriptionProgress: NSProgressIndicator!
     
     override func windowDidLoad() {
@@ -238,7 +239,9 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
             let best : SFTranscription = result.bestTranscription
             self.transcribedTextView.string = best.formattedString
             self.transcriptPopup.isEnabled = true
-            self.transcriptions = result.transcriptions
+            self.transcriptions = result.transcriptions.map { trans in
+                SpokenDoc(trans)
+            }
             
             self.transcriptPopup.removeAllItems()
             for (i, _) in self.transcriptions.enumerated() {
@@ -256,7 +259,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
             if self.transcribedTextView.delegate == nil {
                 self.transcribedTextView.delegate = self
             }
-            self.transcriptionDataSource.data = best
+            self.transcriptionDataSource.data = SpokenDoc(best)
             self.wordTableView.reloadData()
         }
         
@@ -275,40 +278,53 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
         let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
         
         var charPos = 0
-        for seg in trans.segments {
-            if t < seg.timestamp + seg.timestamp {
+        for word in trans.words {
+            if t < word.timestamp + word.timestamp {
                 break
             }
-            charPos += seg.substring.count
+            charPos += word.text.count
         }
         self.transcribedTextView.setSelectedRange(NSRange(0..<charPos))
     }
     
-    // MARK: NSTextViewDelegate
-    func textViewDidChangeSelection(_ notification: Notification) {
+    @IBAction func changeSpokenWord(_ button: NSButton) {
+        guard let i = self.indexOfSelectedWord() else { return }
+        let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
+        trans.words[i].text = self.changeWordField.stringValue
+    }
+    
+    @IBAction func removeSpokenWord(_ button: NSButton) {
+    }
+    
+    func indexOfSelectedWord() -> Int? {
         guard let txtView = self.transcribedTextView else {
-            return
+            return nil
         }
-
-  
         
         let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
         
         let r : NSRange = txtView.selectedRange()
-        for (i, seg) in trans.segments.enumerated() {
-            let segRange : NSRange = seg.substringRange
-            
-            if segRange.intersection(r) != nil {
-                self.timeLineSlider.doubleValue = seg.timestamp
-                self.clipTimeField.doubleValue = seg.timestamp
-                self.wordTableView.selectRowIndexes(IndexSet(integer: i), byExtendingSelection: false)
-                DispatchQueue.main.async {
-                    self.wordTableView.scrollRowToVisible(self.wordTableView.selectedRow)
-                }
-                break
+        var pos = 0
+        for (i, word) in trans.words.enumerated() {
+            if r.contains(pos) {
+                return i
             }
+            pos += word.text.count + 1
+        }
+        return nil
+    }
+    
+    // MARK: NSTextViewDelegate
+    func textViewDidChangeSelection(_ notification: Notification) {
+        guard let i = self.indexOfSelectedWord() else { return }
+        let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
+        let word = trans.words[i]
             
-
+        self.timeLineSlider.doubleValue = word.timestamp
+        self.clipTimeField.doubleValue = word.timestamp
+        self.wordTableView.selectRowIndexes(IndexSet(integer: i), byExtendingSelection: false)
+        DispatchQueue.main.async {
+            self.wordTableView.scrollRowToVisible(self.wordTableView.selectedRow)
         }
     }
     

@@ -8,7 +8,14 @@
 import Foundation
 import Speech
 
-extension SFTranscription {
+extension SpokenDoc {
+    
+    var formattedString : String {
+        self.words.reduce("") { (result, word) in
+            result + word.text + " "
+        }
+    }
+    
     func write(to url: URL) throws {
         try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
         
@@ -18,12 +25,12 @@ extension SFTranscription {
         try self.formattedString.write(to: txtFile, atomically: true, encoding: .utf8)
 
         var timeTxt = "location,length,timestamp,duration\n"
-        for seg in self.segments {
-            let r  = seg.substringRange
+        var i = 0
+        for seg in self.words {
             let t = seg.timestamp
             let dt = seg.duration
-            timeTxt.append(String(format: "%d,%d,%.2f,%.2f\n", r.location, r.length, t, dt))
-//            timeTxt.append("\(r.location), \(r.length), \(t), \(dt)\n")
+            timeTxt.append(String(format: "%d,%d,%.2f,%.2f\n", i, seg.text.count, t, dt))
+            i += seg.text.count + 1
         }
         
         try timeTxt.write(to: timestampFile, atomically: true, encoding: .utf8)
