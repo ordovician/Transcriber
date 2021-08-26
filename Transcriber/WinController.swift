@@ -302,6 +302,9 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
                 self.timeLineSlider.doubleValue = seg.timestamp
                 self.clipTimeField.doubleValue = seg.timestamp
                 self.wordTableView.selectRowIndexes(IndexSet(integer: i), byExtendingSelection: false)
+                DispatchQueue.main.async {
+                    self.wordTableView.scrollRowToVisible(self.wordTableView.selectedRow)
+                }
                 break
             }
             
