@@ -19,6 +19,7 @@
                 <outlet property="transcribeButton" destination="YfY-dD-cGS" id="UDr-hP-hML"/>
                 <outlet property="transcribedTextView" destination="8Cy-9g-zIX" id="mYq-eN-Yaa"/>
                 <outlet property="transcriptPopup" destination="Xre-Ba-0PH" id="Pfr-Ts-zfp"/>
+                <outlet property="transcriptionProgress" destination="n3e-Gh-I65" id="mQt-bK-exp"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
                 <outlet property="wordTableView" destination="3M2-qC-8Sa" id="2yP-if-36Q"/>
             </connections>
@@ -499,6 +500,10 @@
                             </connections>
                         </buttonCell>
                     </button>
+                    <progressIndicator fixedFrame="YES" maxValue="100" indeterminate="YES" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="n3e-Gh-I65">
+                        <rect key="frame" x="323" y="673" width="79" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    </progressIndicator>
                 </subviews>
             </view>
             <connections>

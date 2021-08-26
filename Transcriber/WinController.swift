@@ -31,6 +31,8 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     @IBOutlet weak var clipTimeField: NSTextField!
     @IBOutlet weak var wordTableView: NSTableView!
     
+    @IBOutlet weak var transcriptionProgress: NSProgressIndicator!
+    
     override func windowDidLoad() {
         super.windowDidLoad()
 
@@ -211,6 +213,11 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
         let url: URL = URL(fileURLWithPath: self.audioInputField.stringValue)
         
         let req = SFSpeechURLRecognitionRequest(url: url)
+        req.taskHint = .dictation
+        req.shouldReportPartialResults = true
+        
+        self.transcriptionProgress.startAnimation(sender)
+        
         self.recognizer.recognitionTask(with: req) { (result, error) in
             if let err = error {
                 let alert = NSAlert(error: err)
@@ -225,8 +232,8 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
             }
 
             // Print the speech that has been recognized so far
-            guard result.isFinal else {
-                return
+            if result.isFinal {
+                self.transcriptionProgress.stopAnimation(nil)
             }
             let best : SFTranscription = result.bestTranscription
             self.transcribedTextView.string = best.formattedString
