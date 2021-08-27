@@ -8,7 +8,7 @@
 import Cocoa
 import Speech
 
-class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioRecorderDelegate, NSTextViewDelegate {
+class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioRecorderDelegate, NSTextViewDelegate, NSTableViewDelegate {
     let recognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
     var recorder : AVAudioRecorder?
     var player : AVAudioPlayer?
@@ -39,6 +39,8 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
 
         enableRecordButtons(false)
         self.wordTableView.dataSource = self.transcriptionDataSource
+        self.wordTableView.delegate = self // TODO: This is kind of a crappy solution. This
+                                           // this file becomes a dump. Need to find a better way.
     }
     
     override public func showWindow(_ sender: Any?) {
@@ -137,6 +139,14 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
         }
     }
     
+    // MARK: NSTableViewDelegate
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
+        let i = self.wordTableView.selectedRow
+        self.changeWordField.stringValue = trans.words[i].text
+    }
+
+    
     // MARK: Interface Builder actions
     
     @IBAction func record(sender: AnyObject) {
@@ -232,10 +242,6 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
                 return
             }
 
-            // Print the speech that has been recognized so far
-            if result.isFinal {
-                self.transcriptionProgress.stopAnimation(nil)
-            }
             let best : SFTranscription = result.bestTranscription
             self.transcribedTextView.string = best.formattedString
             self.transcriptPopup.isEnabled = true
@@ -259,8 +265,12 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
             if self.transcribedTextView.delegate == nil {
                 self.transcribedTextView.delegate = self
             }
-            self.transcriptionDataSource.data = SpokenDoc(best)
-            self.wordTableView.reloadData()
+            
+            if result.isFinal {
+                self.transcriptionDataSource.data = SpokenDoc(best)
+                self.wordTableView.reloadData()
+                self.transcriptionProgress.stopAnimation(nil)
+            }
         }
         
     }
@@ -288,9 +298,14 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     }
     
     @IBAction func changeSpokenWord(_ button: NSButton) {
-        guard let i = self.indexOfSelectedWord() else { return }
+        let i = self.wordTableView.selectedRow
         let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
         trans.words[i].text = self.changeWordField.stringValue
+        
+        self.transcriptionDataSource.data = trans
+        self.wordTableView.reloadData()
+        
+        self.transcribedTextView.string = trans.formattedString
     }
     
     @IBAction func removeSpokenWord(_ button: NSButton) {

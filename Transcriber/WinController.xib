@@ -8,6 +8,7 @@
         <customObject id="-2" userLabel="File's Owner" customClass="WinController" customModule="Transcriber" customModuleProvider="target">
             <connections>
                 <outlet property="audioInputField" destination="C8N-Ea-VCL" id="7dl-5e-cCp"/>
+                <outlet property="changeWordField" destination="mQE-Dq-lzx" id="skb-2p-Rdc"/>
                 <outlet property="clipTimeField" destination="qfR-o5-47x" id="ZFC-bB-NJR"/>
                 <outlet property="pauseButton" destination="OmL-BT-Bb1" id="gMS-r8-gpO"/>
                 <outlet property="powerField" destination="22r-iy-eHb" id="guV-pS-0rr"/>
@@ -148,7 +149,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="NZA-aG-1P6">
-                                                            <rect key="frame" x="8" y="0.0" width="114" height="24"/>
+                                                            <rect key="frame" x="18" y="0.0" width="114" height="24"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PUk-um-E5o">
@@ -183,7 +184,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="WiG-1k-icV">
-                                                            <rect key="frame" x="139" y="0.0" width="45" height="24"/>
+                                                            <rect key="frame" x="149" y="0.0" width="45" height="24"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Dfd-4x-I63">
@@ -218,7 +219,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="MFX-YV-TNn">
-                                                            <rect key="frame" x="201" y="0.0" width="37" height="24"/>
+                                                            <rect key="frame" x="211" y="0.0" width="37" height="24"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ecp-UJ-poB">
@@ -476,6 +477,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="changeSpokenWord:" target="-2" id="FIg-Pg-4yC"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Irb-db-JJA">
                         <rect key="frame" x="460" y="54" width="84" height="32"/>
