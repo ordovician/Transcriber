@@ -32,7 +32,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     @IBOutlet weak var wordTableView: NSTableView!
     
     @IBOutlet weak var changeWordField: NSTextField!
-    @IBOutlet weak var transcriptionProgress: NSProgressIndicator!
+    @IBOutlet weak var activityIndicator: NSProgressIndicator!
     
     override func windowDidLoad() {
         super.windowDidLoad()
@@ -121,6 +121,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
         if !ok {
             NSLog("Failed to start recording")
         }
+        self.activityIndicator.startAnimation(nil)
         self.recorder = rec
     }
     
@@ -136,6 +137,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
             self.recorder?.stop()
             self.recorder = nil
             NSLog("Recording interrupted")
+            self.activityIndicator.stopAnimation(nil)
         }
     }
     
@@ -166,6 +168,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     @IBAction func stop(sender: AnyObject) {
         self.recorder?.stop()
         self.recorder = nil
+        self.activityIndicator.stopAnimation(sender)
     }
     
     @IBAction func pause(sender: AnyObject) {
@@ -227,7 +230,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
         req.taskHint = .dictation
         req.shouldReportPartialResults = true
         
-        self.transcriptionProgress.startAnimation(sender)
+        self.activityIndicator.startAnimation(sender)
         
         self.recognizer.recognitionTask(with: req) { (result, error) in
             if let err = error {
@@ -269,7 +272,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
             if result.isFinal {
                 self.transcriptionDataSource.data = SpokenDoc(best)
                 self.wordTableView.reloadData()
-                self.transcriptionProgress.stopAnimation(nil)
+                self.activityIndicator.stopAnimation(nil)
             }
         }
         

@@ -7,6 +7,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="WinController" customModule="Transcriber" customModuleProvider="target">
             <connections>
+                <outlet property="activityIndicator" destination="n3e-Gh-I65" id="mQt-bK-exp"/>
                 <outlet property="audioInputField" destination="C8N-Ea-VCL" id="7dl-5e-cCp"/>
                 <outlet property="changeWordField" destination="mQE-Dq-lzx" id="skb-2p-Rdc"/>
                 <outlet property="clipTimeField" destination="qfR-o5-47x" id="ZFC-bB-NJR"/>
@@ -20,7 +21,6 @@
                 <outlet property="transcribeButton" destination="YfY-dD-cGS" id="UDr-hP-hML"/>
                 <outlet property="transcribedTextView" destination="8Cy-9g-zIX" id="mYq-eN-Yaa"/>
                 <outlet property="transcriptPopup" destination="Xre-Ba-0PH" id="Pfr-Ts-zfp"/>
-                <outlet property="transcriptionProgress" destination="n3e-Gh-I65" id="mQt-bK-exp"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
                 <outlet property="wordTableView" destination="3M2-qC-8Sa" id="2yP-if-36Q"/>
             </connections>
