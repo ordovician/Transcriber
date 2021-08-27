@@ -297,8 +297,10 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
         self.transcribedTextView.setSelectedRange(NSRange(0..<charPos))
     }
     
-    @IBAction func changeSpokenWord(_ button: NSButton) {
+    @IBAction func changeSpokenWord(_ sender: Any) {
         let i = self.wordTableView.selectedRow
+        if i < 0 { return }
+        
         let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
         trans.words[i].text = self.changeWordField.stringValue
         
