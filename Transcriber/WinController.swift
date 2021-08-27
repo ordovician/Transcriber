@@ -303,10 +303,11 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
         
         let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
         
-        let r : NSRange = txtView.selectedRange()
+        let selection : NSRange = txtView.selectedRange()
         var pos = 0
         for (i, word) in trans.words.enumerated() {
-            if r.contains(pos) {
+            let r = NSRange(location: pos, length: word.text.count)
+            if r.contains(selection.location) {
                 return i
             }
             pos += word.text.count + 1
