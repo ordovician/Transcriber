@@ -62,8 +62,13 @@ class WrittenDoc {
     var tags : [Tag] = []
 }
 
-//class AlignedDoc {
-//    var spokenWords : [SpokenWord]
-//    var writtenWords : [WrittenWord]
-//    var tags : [Tag] = []
-//}
+class AlignedDoc {
+    var spokenWords : [SpokenWord?]
+    var writtenWords : [WrittenWord?]
+    var tags : [Tag] = []
+    
+    init(spokenWords: [SpokenWord?], writtenWords: [WrittenWord?]) {
+        self.spokenWords = spokenWords
+        self.writtenWords = writtenWords
+    }
+}

@@ -17,7 +17,7 @@ func score(_ v : WrittenWord, _ w : SpokenWord) -> Int {
     }
 }
 
-func align(writtenDoc : WrittenDoc, spokenDoc : SpokenDoc) {
+func align(writtenDoc : WrittenDoc, spokenDoc : SpokenDoc) -> AlignedDoc {
     let vs = writtenDoc.words
     let ws = spokenDoc.words
     
@@ -46,7 +46,49 @@ func align(writtenDoc : WrittenDoc, spokenDoc : SpokenDoc) {
     }
     
     // retrace
-//    var i = m
-//    var j = n
+    var i = m
+    var j = n
     
+    var spokens : [SpokenWord?] = []
+    var writtens : [WrittenWord?] = []
+    
+    while i > 0 && j > 0 {
+        if D[i,j] - score(vs[i-1], ws[j-1]) == D[i-1, j-1] {
+            i -= 1
+            j -= 1
+            writtens.append(vs[i])
+            spokens.append(ws[j])
+
+        } else if D[i, j] - gapcost == D[i, j-1] {
+            j -= 1
+            writtens.append(nil)
+            spokens.append(ws[j])
+        } else if D[i, j] - gapcost == D[i-1, j] {
+            i -= 1
+            writtens.append(vs[i])
+            spokens.append(nil)
+        } else {
+            assert(false, "Bug in align")
+        }
+    }
+    
+    // closeup shop
+    if j > 1 {
+        while j > 1 {
+            j -= 1
+            writtens.append(nil)
+            spokens.append(ws[j])
+        }
+    } else if i > 1 {
+        while i > 1 {
+            i -= 1
+            writtens.append(vs[i])
+            spokens.append(nil)
+        }
+    }
+    
+    spokens.reverse()
+    writtens.reverse()
+    
+    return AlignedDoc(spokenWords: spokens, writtenWords: writtens)
 }
