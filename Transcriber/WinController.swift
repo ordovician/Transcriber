@@ -200,7 +200,9 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
                     let res = try url.resourceValues(forKeys: [.isDirectoryKey])
 
                     if let isdir = res.isDirectory, isdir {
-                        self.transcriptionDataSource.data = try SpokenDoc(from: url)
+                        let spoken = try SpokenDoc(from: url)
+                        self.transcriptionDataSource.data = spoken
+                        self.transcribedTextView.string = spoken.formattedString
                         self.wordTableView.reloadData()
                     } else {
                         let sourceText = try String(contentsOf: url, encoding: .utf8)
