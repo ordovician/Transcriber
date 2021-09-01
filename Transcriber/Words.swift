@@ -88,6 +88,13 @@ class AlignedDoc {
     var writtenWords : [WrittenWord?]
     var tags : [Tag] = []
     
+    var spokenDoc: SpokenDoc {
+        let spokens = spokenWords.compactMap { word in
+            word
+        }
+        return SpokenDoc(words: spokens)
+    }
+    
     var count : Int {
         assert(self.spokenWords.count == self.writtenWords.count)
         return self.spokenWords.count

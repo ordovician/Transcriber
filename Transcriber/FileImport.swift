@@ -39,7 +39,7 @@ extension SpokenDoc {
 
 extension WrittenDoc {
     convenience init(from url: URL) throws {
-        let txt = try String(contentsOf: url.appendingPathComponent("transcript.txt"),
+        let txt = try String(contentsOf: url.appendingPathComponent("original.txt"),
                              encoding: .utf8)
         
         var words : [WrittenWord] = []

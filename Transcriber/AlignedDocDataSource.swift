@@ -27,11 +27,14 @@ class AlignedDocDataSource: NSObject, NSTableViewDataSource {
         case "spoken":
             return spoken.text
         case "written":
-            return written.text
+//            return written.text
+            return spoken.duration
+
         case "timestamp":
             return spoken.timestamp
         case "duration":
-            return spoken.duration
+//            return spoken.duration
+            return written.text
         default:
             return nil
         }

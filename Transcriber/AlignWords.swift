@@ -18,6 +18,7 @@ func score(_ v : WrittenWord, _ w : SpokenWord) -> Int {
 }
 
 extension AlignedDoc {
+
     convenience init(spokenDoc: SpokenDoc, writtenDoc: WrittenDoc) throws {
         let vs = writtenDoc.words
         let ws = spokenDoc.words
@@ -33,7 +34,7 @@ extension AlignedDoc {
         }
 
         for j in 1...m {
-            D[j, 0] = D[0, j-1] + gapcost
+            D[j, 0] = D[j-1, 0] + gapcost
         }
 
         for i in 1...m {
@@ -74,14 +75,14 @@ extension AlignedDoc {
         }
         
         // closeup shop
-        if j > 1 {
-            while j > 1 {
+        if j > 0 {
+            while j > 0 {
                 j -= 1
                 writtens.append(nil)
                 spokens.append(ws[j])
             }
-        } else if i > 1 {
-            while i > 1 {
+        } else if i > 0 {
+            while i > 0 {
                 i -= 1
                 writtens.append(vs[i])
                 spokens.append(nil)

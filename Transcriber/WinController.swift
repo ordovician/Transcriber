@@ -12,7 +12,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     let recognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
     var recorder : AVAudioRecorder?
     var player : AVAudioPlayer?
-    var transcriptions: [SpokenDoc] = []
+    var spokenDocs: [SpokenDoc] = []
     
     var alignedDocDataSource  = AlignedDocDataSource()
     
@@ -143,7 +143,8 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     
     // MARK: NSTableViewDelegate
     func tableViewSelectionDidChange(_ notification: Notification) {
-        let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
+        let indexSelectedItem = transcriptPopup.indexOfSelectedItem
+        let trans = self.spokenDocs[indexSelectedItem]
         let i = self.wordTableView.selectedRow
         self.changeWordField.stringValue = trans.words[i].text
     }
@@ -202,6 +203,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
                     if let isdir = res.isDirectory, isdir {
                         let doc = try AlignedDoc(from: url)
                         self.alignedDocDataSource.doc = doc
+                        self.spokenDocs = [doc.spokenDoc]
                         self.spokenTextView.string = doc.spokenText
                         self.writtenTextView.string = doc.writtenText
                         self.wordTableView.reloadData()
@@ -259,12 +261,12 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
             let best : SFTranscription = result.bestTranscription
             self.spokenTextView.string = best.formattedString
             self.transcriptPopup.isEnabled = true
-            self.transcriptions = result.transcriptions.map { trans in
+            self.spokenDocs = result.transcriptions.map { trans in
                 SpokenDoc(trans)
             }
             
             self.transcriptPopup.removeAllItems()
-            for (i, _) in self.transcriptions.enumerated() {
+            for (i, _) in self.spokenDocs.enumerated() {
                 self.transcriptPopup.addItem(withTitle: "\(i)")
             }
             
@@ -296,7 +298,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     
     // Switch to showing a different transcript interpreted from the voice
     @IBAction func changeTranscript(_ sender: NSPopUpButton) {
-        let trans = self.transcriptions[sender.indexOfSelectedItem]
+        let trans = self.spokenDocs[sender.indexOfSelectedItem]
         self.spokenTextView.string = trans.formattedString
     }
     
@@ -304,7 +306,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
         let t = slider.doubleValue
         self.clipTimeField.doubleValue = t
         
-        let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
+        let trans = self.spokenDocs[transcriptPopup.indexOfSelectedItem]
         
         var charPos = 0
         for word in trans.words {
@@ -320,7 +322,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
         let i = self.wordTableView.selectedRow
         if i < 0 { return }
         
-        let spoken = self.transcriptions[transcriptPopup.indexOfSelectedItem]
+        let spoken = self.spokenDocs[transcriptPopup.indexOfSelectedItem]
         spoken.words[i].text = self.changeWordField.stringValue
         let written = WrittenDoc()
         
@@ -344,7 +346,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
             return nil
         }
         
-        let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
+        let trans = self.spokenDocs[transcriptPopup.indexOfSelectedItem]
         
         let selection : NSRange = txtView.selectedRange()
         var pos = 0
@@ -361,7 +363,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     // MARK: NSTextViewDelegate
     func textViewDidChangeSelection(_ notification: Notification) {
         guard let i = self.indexOfSelectedWord() else { return }
-        let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
+        let trans = self.spokenDocs[transcriptPopup.indexOfSelectedItem]
         let word = trans.words[i]
             
         self.timeLineSlider.doubleValue = word.timestamp
