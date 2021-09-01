@@ -15,7 +15,7 @@
 		D55C902B2684D90900F3F8A3 /* WinController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55C90292684D90900F3F8A3 /* WinController.swift */; };
 		D55C902C2684D90900F3F8A3 /* WinController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D55C902A2684D90900F3F8A3 /* WinController.xib */; };
 		D5A3636026853730006021EE /* Speech.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A3635F26853730006021EE /* Speech.swift */; };
-		D5A36363268A3D6A006021EE /* TranscriptionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A36362268A3D6A006021EE /* TranscriptionDataSource.swift */; };
+		D5A36363268A3D6A006021EE /* AlignedDocDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A36362268A3D6A006021EE /* AlignedDocDataSource.swift */; };
 		D5A3639B268B82F4006021EE /* FileExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A3639A268B82F4006021EE /* FileExport.swift */; };
 		D5C8C2ED26D8072700DDD18F /* Words.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C8C2EC26D8072700DDD18F /* Words.swift */; };
 		D5C8C2EF26D80BDE00DDD18F /* AlignWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C8C2EE26D80BDE00DDD18F /* AlignWords.swift */; };
@@ -56,7 +56,7 @@
 		D55C90292684D90900F3F8A3 /* WinController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinController.swift; sourceTree = "<group>"; };
 		D55C902A2684D90900F3F8A3 /* WinController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WinController.xib; sourceTree = "<group>"; };
 		D5A3635F26853730006021EE /* Speech.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Speech.swift; sourceTree = "<group>"; };
-		D5A36362268A3D6A006021EE /* TranscriptionDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionDataSource.swift; sourceTree = "<group>"; };
+		D5A36362268A3D6A006021EE /* AlignedDocDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignedDocDataSource.swift; sourceTree = "<group>"; };
 		D5A3639A268B82F4006021EE /* FileExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExport.swift; sourceTree = "<group>"; };
 		D5C8C2EC26D8072700DDD18F /* Words.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Words.swift; sourceTree = "<group>"; };
 		D5C8C2EE26D80BDE00DDD18F /* AlignWords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignWords.swift; sourceTree = "<group>"; };
@@ -120,7 +120,7 @@
 				D55C90042684D7C500F3F8A3 /* Info.plist */,
 				D55C90052684D7C500F3F8A3 /* Transcriber.entitlements */,
 				D5A3635F26853730006021EE /* Speech.swift */,
-				D5A36362268A3D6A006021EE /* TranscriptionDataSource.swift */,
+				D5A36362268A3D6A006021EE /* AlignedDocDataSource.swift */,
 				D5A3639A268B82F4006021EE /* FileExport.swift */,
 				D5C8C2EC26D8072700DDD18F /* Words.swift */,
 				D5C8C2EE26D80BDE00DDD18F /* AlignWords.swift */,
@@ -289,7 +289,7 @@
 				D55C8FFE2684D7C100F3F8A3 /* AppDelegate.swift in Sources */,
 				D5C8C2F126D810B900DDD18F /* Matrix.swift in Sources */,
 				D5C8C2ED26D8072700DDD18F /* Words.swift in Sources */,
-				D5A36363268A3D6A006021EE /* TranscriptionDataSource.swift in Sources */,
+				D5A36363268A3D6A006021EE /* AlignedDocDataSource.swift in Sources */,
 				D5A3639B268B82F4006021EE /* FileExport.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

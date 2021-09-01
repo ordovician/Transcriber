@@ -69,11 +69,17 @@ func ==(s : Word, t : Word) -> Bool {
 }
 
 class WrittenDoc {
-    var words : [WrittenWord] = []
-    var tags : [Tag] = []
+    var words : [WrittenWord]
+    var tags : [Tag]
+    
     init(words: [WrittenWord], tags: [Tag]) {
         self.words = words
         self.tags = tags
+    }
+    
+    init() {
+        self.words = []
+        self.tags = []
     }
 }
 
@@ -82,8 +88,19 @@ class AlignedDoc {
     var writtenWords : [WrittenWord?]
     var tags : [Tag] = []
     
+    var count : Int {
+        assert(self.spokenWords.count == self.writtenWords.count)
+        return self.spokenWords.count
+    }
+    
     init(spokenWords: [SpokenWord?], writtenWords: [WrittenWord?]) {
         self.spokenWords = spokenWords
         self.writtenWords = writtenWords
+        
+    }
+    
+    init() {
+        self.spokenWords = []
+        self.writtenWords = []
     }
 }

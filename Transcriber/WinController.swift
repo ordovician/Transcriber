@@ -14,10 +14,10 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     var player : AVAudioPlayer?
     var transcriptions: [SpokenDoc] = []
     
-    var transcriptionDataSource  = TranscriptionDataSource()
+    var alignedDocDataSource  = AlignedDocDataSource()
     
-    @IBOutlet weak var transcribedTextView: NSTextView!
-    @IBOutlet weak var sourceTextView: NSTextView!
+    @IBOutlet weak var spokenTextView: NSTextView!
+    @IBOutlet weak var writtenTextView: NSTextView!
     @IBOutlet weak var recordButton: NSButton!
     @IBOutlet weak var pauseButton: NSButton!
     @IBOutlet weak var transcribeButton: NSButton!
@@ -38,7 +38,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
         super.windowDidLoad()
 
         enableRecordButtons(false)
-        self.wordTableView.dataSource = self.transcriptionDataSource
+        self.wordTableView.dataSource = self.alignedDocDataSource
         self.wordTableView.delegate = self // TODO: This is kind of a crappy solution. This
                                            // this file becomes a dump. Need to find a better way.
     }
@@ -200,13 +200,14 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
                     let res = try url.resourceValues(forKeys: [.isDirectoryKey])
 
                     if let isdir = res.isDirectory, isdir {
-                        let spoken = try SpokenDoc(from: url)
-                        self.transcriptionDataSource.data = spoken
-                        self.transcribedTextView.string = spoken.formattedString
+                        let doc = try AlignedDoc(from: url)
+                        self.alignedDocDataSource.doc = doc
+                        self.spokenTextView.string = doc.spokenText
+                        self.writtenTextView.string = doc.writtenText
                         self.wordTableView.reloadData()
                     } else {
                         let sourceText = try String(contentsOf: url, encoding: .utf8)
-                        self.sourceTextView.string = sourceText
+                        self.writtenTextView.string = sourceText
                         self.textInputField.stringValue = url.path
                     }
                 } catch let err {
@@ -256,7 +257,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
             }
 
             let best : SFTranscription = result.bestTranscription
-            self.transcribedTextView.string = best.formattedString
+            self.spokenTextView.string = best.formattedString
             self.transcriptPopup.isEnabled = true
             self.transcriptions = result.transcriptions.map { trans in
                 SpokenDoc(trans)
@@ -275,14 +276,19 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
             
             self.timeLineSlider.maxValue = lastSeg.timestamp + lastSeg.duration
             self.timeLineSlider.doubleValue = 0.0
-            if self.transcribedTextView.delegate == nil {
-                self.transcribedTextView.delegate = self
+            if self.spokenTextView.delegate == nil {
+                self.spokenTextView.delegate = self
             }
             
             if result.isFinal {
-                self.transcriptionDataSource.data = SpokenDoc(best)
-                self.wordTableView.reloadData()
+                let spoken = SpokenDoc(best)
+                let written = WrittenDoc()
                 self.activityIndicator.stopAnimation(nil)
+
+                if let doc = try? AlignedDoc(spokenDoc: spoken, writtenDoc: written) {
+                    self.alignedDocDataSource.doc = doc
+                    self.wordTableView.reloadData()
+                }
             }
         }
         
@@ -291,7 +297,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
     // Switch to showing a different transcript interpreted from the voice
     @IBAction func changeTranscript(_ sender: NSPopUpButton) {
         let trans = self.transcriptions[sender.indexOfSelectedItem]
-        self.transcribedTextView.string = trans.formattedString
+        self.spokenTextView.string = trans.formattedString
     }
     
     @IBAction func moveInsideClip(_ slider: NSSlider) {
@@ -307,27 +313,34 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
             }
             charPos += word.text.count
         }
-        self.transcribedTextView.setSelectedRange(NSRange(0..<charPos))
+        self.spokenTextView.setSelectedRange(NSRange(0..<charPos))
     }
     
     @IBAction func changeSpokenWord(_ sender: Any) {
         let i = self.wordTableView.selectedRow
         if i < 0 { return }
         
-        let trans = self.transcriptions[transcriptPopup.indexOfSelectedItem]
-        trans.words[i].text = self.changeWordField.stringValue
+        let spoken = self.transcriptions[transcriptPopup.indexOfSelectedItem]
+        spoken.words[i].text = self.changeWordField.stringValue
+        let written = WrittenDoc()
         
-        self.transcriptionDataSource.data = trans
-        self.wordTableView.reloadData()
-        
-        self.transcribedTextView.string = trans.formattedString
+        do {
+            let doc = try AlignedDoc(spokenDoc: spoken, writtenDoc: written)
+            self.alignedDocDataSource.doc = doc
+            self.wordTableView.reloadData()
+            
+            self.spokenTextView.string = doc.spokenText
+        } catch let err {
+            let alert = NSAlert(error: err)
+            alert.runModal()
+        }
     }
     
     @IBAction func removeSpokenWord(_ button: NSButton) {
     }
     
     func indexOfSelectedWord() -> Int? {
-        guard let txtView = self.transcribedTextView else {
+        guard let txtView = self.spokenTextView else {
             return nil
         }
         
@@ -374,7 +387,7 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
                 }
                 
                 do {
-                    try self.transcriptionDataSource.data.write(to: url)
+                    try self.alignedDocDataSource.doc.write(to: url)
                 } catch let err {
                     let alert = NSAlert(error: err)
                     alert.runModal()

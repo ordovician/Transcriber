@@ -37,5 +37,23 @@ extension SpokenDoc {
     }
 }
 
-
+extension AlignedDoc {
+    func write(to url: URL) throws {
+        
+    }
+    
+    var spokenText : String {
+        let words = self.spokenWords.compactMap { word in
+            word?.text
+        }
+        return words.joined(separator: " ")
+    }
+    
+    var writtenText : String {
+        let words = self.writtenWords.compactMap { word in
+            word?.text
+        }
+        return words.joined(separator: " ")
+    }
+}
 

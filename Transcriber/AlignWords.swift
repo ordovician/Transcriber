@@ -18,10 +18,7 @@ func score(_ v : WrittenWord, _ w : SpokenWord) -> Int {
 }
 
 extension AlignedDoc {
-    convenience init(from url: URL) throws {
-        let spokenDoc = try SpokenDoc(from: url)
-        let writtenDoc = try WrittenDoc(from: url)
-   
+    convenience init(spokenDoc: SpokenDoc, writtenDoc: WrittenDoc) throws {
         let vs = writtenDoc.words
         let ws = spokenDoc.words
         
@@ -95,5 +92,12 @@ extension AlignedDoc {
         writtens.reverse()
         
         self.init(spokenWords: spokens, writtenWords: writtens)
+    }
+    
+    convenience init(from url: URL) throws {
+        let spokenDoc = try SpokenDoc(from: url)
+        let writtenDoc = try WrittenDoc(from: url)
+   
+        try self.init(spokenDoc: spokenDoc, writtenDoc: writtenDoc)
     }
 }

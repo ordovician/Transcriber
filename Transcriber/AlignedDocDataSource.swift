@@ -8,28 +8,30 @@
 import Cocoa
 //import Speech
 
-class TranscriptionDataSource: NSObject, NSTableViewDataSource {
-    var data : SpokenDoc = SpokenDoc()
+class AlignedDocDataSource: NSObject, NSTableViewDataSource {
+    var doc : AlignedDoc = AlignedDoc()
 //    var dummy = ["alpha", "beta", "gamma", "zeta"]
     func numberOfRows(in tableView: NSTableView) -> Int {
 //        return data.segments.count
-        return data.words.count
+        return doc.count
     }
     
     func tableView(_ tableView: NSTableView, objectValueFor column: NSTableColumn?, row: Int) -> Any? {
         guard let col = column else {
             return nil
         }
-        
-        let word = data.words[row]
-        
+    
+        let spoken = doc.spokenWords[row] ?? SpokenWord(text: "", timestamp: 0, duration: 0)
+        let written = doc.writtenWords[row] ?? WrittenWord(text: "")
         switch String(col.identifier.rawValue) {
-        case "word":
-            return word.text
+        case "spoken":
+            return spoken.text
+        case "written":
+            return written.text
         case "timestamp":
-            return word.timestamp
+            return spoken.timestamp
         case "duration":
-            return word.duration
+            return spoken.duration
         default:
             return nil
         }
