@@ -20,6 +20,7 @@
 		D5C8C2ED26D8072700DDD18F /* Words.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C8C2EC26D8072700DDD18F /* Words.swift */; };
 		D5C8C2EF26D80BDE00DDD18F /* AlignWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C8C2EE26D80BDE00DDD18F /* AlignWords.swift */; };
 		D5C8C2F126D810B900DDD18F /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C8C2F026D810B900DDD18F /* Matrix.swift */; };
+		D5C8C2F326DFAE7900DDD18F /* FileImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C8C2F226DFAE7900DDD18F /* FileImport.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 		D5C8C2EC26D8072700DDD18F /* Words.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Words.swift; sourceTree = "<group>"; };
 		D5C8C2EE26D80BDE00DDD18F /* AlignWords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignWords.swift; sourceTree = "<group>"; };
 		D5C8C2F026D810B900DDD18F /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
+		D5C8C2F226DFAE7900DDD18F /* FileImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileImport.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +125,7 @@
 				D5C8C2EC26D8072700DDD18F /* Words.swift */,
 				D5C8C2EE26D80BDE00DDD18F /* AlignWords.swift */,
 				D5C8C2F026D810B900DDD18F /* Matrix.swift */,
+				D5C8C2F226DFAE7900DDD18F /* FileImport.swift */,
 			);
 			path = Transcriber;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 			files = (
 				D5A3636026853730006021EE /* Speech.swift in Sources */,
 				D55C902B2684D90900F3F8A3 /* WinController.swift in Sources */,
+				D5C8C2F326DFAE7900DDD18F /* FileImport.swift in Sources */,
 				D5C8C2EF26D80BDE00DDD18F /* AlignWords.swift in Sources */,
 				D55C8FFE2684D7C100F3F8A3 /* AppDelegate.swift in Sources */,
 				D5C8C2F126D810B900DDD18F /* Matrix.swift in Sources */,

@@ -22,6 +22,12 @@ struct SpokenWord : Word {
         self.timestamp = seg.timestamp
         self.duration = seg.duration
     }
+    
+    init(text: String, timestamp: Float64, duration: Float64) {
+        self.text = text
+        self.timestamp = timestamp
+        self.duration = duration
+    }
 }
 
 class SpokenDoc {
@@ -36,6 +42,11 @@ class SpokenDoc {
             SpokenWord(seg)
         }
     }
+    
+    init(words: [SpokenWord]) {
+        self.words = words
+    }
+    
 }
 
 struct Tag {
@@ -60,6 +71,10 @@ func ==(s : Word, t : Word) -> Bool {
 class WrittenDoc {
     var words : [WrittenWord] = []
     var tags : [Tag] = []
+    init(words: [WrittenWord], tags: [Tag]) {
+        self.words = words
+        self.tags = tags
+    }
 }
 
 class AlignedDoc {

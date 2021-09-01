@@ -181,27 +181,35 @@ class WinController: NSWindowController, SFSpeechRecognizerDelegate, AVAudioReco
         
     }
     
-    @IBAction func loadSourceText(sender: AnyObject) {
-        let openPanel = NSOpenPanel()
+    @IBAction func loadProject(sender: AnyObject) {
+        let panel = NSOpenPanel()
         
-        openPanel.canChooseFiles = true
-        openPanel.canChooseDirectories = false
-        
-        openPanel.beginSheetModal(for: window!) {
-            [unowned openPanel] (response : NSApplication.ModalResponse) in
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = true
+        panel.directoryURL = URL(fileURLWithPath: NSHomeDirectory())
+        panel.beginSheetModal(for: window!) {
+            [unowned panel] (response : NSApplication.ModalResponse) in
             if response == .OK {
-                guard let url = openPanel.url else {
+                guard let url = panel.url else {
                     let alert = NSAlert()
                     alert.messageText = "Could not retrieve file location"
                     alert.runModal()
                     return
                 }
                 do {
-                    let sourceText = try String(contentsOf: url, encoding: .utf8)
-                    self.sourceTextView.string = sourceText
-                    self.textInputField.stringValue = url.path
-                } catch {
-                    NSLog("Unable to load file")
+                    let res = try url.resourceValues(forKeys: [.isDirectoryKey])
+
+                    if let isdir = res.isDirectory, isdir {
+                        self.transcriptionDataSource.data = try SpokenDoc(from: url)
+                        self.wordTableView.reloadData()
+                    } else {
+                        let sourceText = try String(contentsOf: url, encoding: .utf8)
+                        self.sourceTextView.string = sourceText
+                        self.textInputField.stringValue = url.path
+                    }
+                } catch let err {
+                    let alert = NSAlert(error: err)
+                    alert.runModal()
                 }
             }
         }

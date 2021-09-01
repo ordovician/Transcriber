@@ -100,7 +100,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <clipView key="contentView" drawsBackground="NO" id="HLb-lv-DWI">
                                     <rect key="frame" x="0.0" y="0.0" width="359" height="575"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" findStyle="bar" smartInsertDelete="YES" id="8Cy-9g-zIX">
                                             <rect key="frame" x="0.0" y="0.0" width="359" height="575"/>
@@ -127,7 +127,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                 <clipView key="contentView" id="Nah-Gj-uda">
                                     <rect key="frame" x="1" y="1" width="318" height="573"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="automatic" headerView="SEf-o1-l3e" viewBased="YES" id="3M2-qC-8Sa">
                                             <rect key="frame" x="0.0" y="0.0" width="318" height="545"/>
@@ -263,7 +263,7 @@
                                 <autoresizingMask key="autoresizingMask"/>
                                 <clipView key="contentView" drawsBackground="NO" id="dlL-jJ-AVt">
                                     <rect key="frame" x="0.0" y="0.0" width="136" height="575"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" findStyle="bar" smartInsertDelete="YES" id="nmE-Xj-WdC">
                                             <rect key="frame" x="0.0" y="0.0" width="136" height="575"/>
@@ -345,7 +345,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="loadSourceTextWithSender:" target="-2" id="xnr-DR-tBX"/>
+                            <action selector="loadProjectWithSender:" target="-2" id="xnr-DR-tBX"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MbJ-R5-nY9">
